@@ -1,0 +1,456 @@
+/* ============================================================
+   PCTO PRESENTAZIONE — Nico Valle
+   Tema: Nero · Verde Chiaro · Bianco
+   Font: Space Mono (mono/tecnico) + DM Sans (corpo)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+/* ─── CSS Variables ─── */
+:root {
+  --nero:        #0a0a0a;
+  --nero-2:      #111111;
+  --nero-3:      #1a1a1a;
+  --nero-4:      #222222;
+  --verde:       #6effa0;
+  --verde-scuro: #3dd472;
+  --verde-dim:   rgba(110, 255, 160, 0.12);
+  --verde-glow:  rgba(110, 255, 160, 0.25);
+  --bianco:      #f5f5f0;
+  --grigio:      #888880;
+  --grigio-dim:  rgba(255, 255, 240, 0.06);
+
+  --font-mono: 'Space Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
+
+  --radius:    4px;
+  --radius-lg: 12px;
+  --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Reset globale ─── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--verde) var(--nero-2);
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--nero-2); }
+::-webkit-scrollbar-thumb { background: var(--verde); border-radius: 3px; }
+
+/* ─── Body ─── */
+body {
+  background-color: var(--nero);
+  color: var(--bianco);
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 1rem;
+  line-height: 1.65;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-image:
+    linear-gradient(rgba(110, 255, 160, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110, 255, 160, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ─── Header ─── */
+header {
+  position: relative;
+  width: 100%;
+  padding: 5rem 8vw 4rem;
+  background: var(--nero-2);
+  border-bottom: 1px solid rgba(110, 255, 160, 0.18);
+  overflow: hidden;
+}
+
+header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(to bottom, var(--verde), transparent);
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  top: -80px; left: 3%;
+  width: 350px; height: 350px;
+  background: radial-gradient(circle, rgba(110,255,160,0.18) 0%, transparent 70%);
+  pointer-events: none;
+  animation: blobPulse 4s ease-in-out infinite;
+}
+
+@keyframes blobPulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%       { transform: scale(1.25); opacity: 1; }
+}
+
+header h1 {
+  font-family: var(--font-mono);
+  font-size: clamp(1.9rem, 5.5vw, 3.8rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--bianco);
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+header h1::before {
+  content: '> ';
+  color: var(--verde);
+}
+
+header h3 {
+  font-family: var(--font-body);
+  font-size: clamp(0.8rem, 1.8vw, 1rem);
+  font-weight: 400;
+  color: var(--verde);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 0.85rem;
+  position: relative;
+  z-index: 1;
+  opacity: 0.8;
+}
+
+header h3::before {
+  content: '— ';
+  opacity: 0.5;
+}
+
+/* ─── Div libro centrato ─── */
+body > div {
+  background: var(--nero-2);
+  border-bottom: 1px solid rgba(110, 255, 160, 0.08);
+  padding: 3rem 0 !important;
+}
+
+/* ─── Section ─── */
+section {
+  max-width: 2100px;
+  margin: 0 auto;
+  padding: 5rem 4vw;
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  counter-reset: slide-counter;
+}
+
+/* ─── Article — slide ─── */
+article {
+  position: relative;
+  background: var(--nero-2);
+  border: 1px solid rgba(110, 255, 160, 0.1);
+  border-radius: var(--radius-lg);
+  padding: 3rem 3.5rem 3.5rem;
+  overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  counter-increment: slide-counter;
+  animation: slideUp 0.65s ease-out both;
+}
+
+article:nth-child(1) { animation-delay: 0.05s; }
+article:nth-child(2) { animation-delay: 0.15s; }
+article:nth-child(3) { animation-delay: 0.25s; }
+article:nth-child(4) { animation-delay: 0.35s; }
+article:nth-child(5) { animation-delay: 0.45s; }
+article:nth-child(6) { animation-delay: 0.55s; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Bordo accent top */
+article::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--verde) 0%, transparent 55%);
+  opacity: 0.5;
+  transition: opacity var(--transition);
+}
+
+/* Numero slide watermark */
+article::after {
+  content: '0' counter(slide-counter);
+  position: absolute;
+  bottom: 1.2rem;
+  right: 2rem;
+  font-family: var(--font-mono);
+  font-size: 5.5rem;
+  font-weight: 700;
+  color: rgba(110, 255, 160, 0.04);
+  line-height: 1;
+  pointer-events: none;
+  transition: color var(--transition);
+}
+
+article:hover {
+  border-color: rgba(110, 255, 160, 0.28);
+  box-shadow: 0 0 50px rgba(110, 255, 160, 0.06), 0 4px 16px rgba(0,0,0,0.5);
+}
+
+article:hover::before { opacity: 1; }
+article:hover::after  { color: rgba(110, 255, 160, 0.08); }
+
+/* ─── Heading articolo ─── */
+article h2 {
+  font-family: var(--font-mono);
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-weight: 700;
+  color: var(--bianco);
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+article h2::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--verde);
+  margin-top: 0.55rem;
+  border-radius: 1px;
+  transition: width 0.4s ease;
+}
+
+article:hover h2::after {
+  width: 72px;
+}
+
+/* ─── Paragrafi ─── */
+article p {
+  color: rgba(245, 245, 240, 0.7);
+  font-size: 1rem;
+  max-width: 65ch;
+  margin-bottom: 1.2rem;
+}
+
+/* ─── Liste ─── */
+article ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+  max-width: 55ch;
+}
+
+article ul li {
+  color: rgba(245, 245, 240, 0.75);
+  font-size: 0.98rem;
+  padding-left: 1.3rem;
+  position: relative;
+}
+
+article ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--verde);
+  font-size: 0.78em;
+  top: 0.18em;
+}
+
+/* ─── Immagini ─── */
+article img {
+  max-width: 100%;
+  height: auto;
+  max-height: 380px;
+  object-fit: cover;
+  border-radius: var(--radius);
+  border: 1px solid rgba(110, 255, 160, 0.1);
+  display: block;
+  margin: 1.5rem 0;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+article img:hover {
+  border-color: rgba(110, 255, 160, 0.25);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+
+/* ─── Link ─── */
+article a {
+  color: var(--verde);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid rgba(110, 255, 160, 0.35);
+  padding-bottom: 1px;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+article a::before { content: '↗ '; font-size: 0.78em; }
+
+article a:hover {
+  color: var(--bianco);
+  border-color: var(--bianco);
+}
+
+/* ─── Componenti inclusi ─── */
+.slider-wrapper {
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 2rem;
+  border: 1px solid rgba(110, 255, 160, 0.08);
+  /* Centra il componente nella slide */
+  width: 100%;
+  max-width: 100%;
+  display: block;
+}
+
+/* Fix: le frecce verdi (▸) nelle liste dello slider non devono sovrapporsi al testo.
+   Lo slider ha già il suo reset (margin/padding: 0), quindi reimpostiamo il padding
+   corretto solo per le liste dentro .componente-content */
+.slider-wrapper .componente-content ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+  max-width: 100%;
+  /* Annulla l'ereditarietà da article ul */
+  padding-left: 0 !important;
+}
+
+.slider-wrapper .componente-content ul li {
+  padding-left: 1.6rem !important;
+  position: relative;
+}
+
+.slider-wrapper .componente-content ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--verde, #6effa0);
+  font-size: 0.78em;
+  top: 0.22em;
+  /* Impedisce che l'arrow sia dentro il testo */
+  width: 1.2rem;
+  display: inline-block;
+}
+
+/* Fix: il div wrapper attorno allo slider nella slide 5 deve essere full-width e senza padding extra */
+article > div:has(.slider-wrapper) {
+  width: 100%;
+  margin: 0;
+  padding: 0 !important;
+}
+
+.card-guardioes-wrapper {
+  margin-top: 2rem;
+  padding: 0 !important;
+}
+
+/* SliderBlob */
+fieldset {
+  margin-top: 2rem;
+  border-radius: var(--radius) !important;
+  overflow: hidden;
+}
+
+/* 3D viewer iframe/canvas */
+article iframe,
+article canvas {
+  margin-top: 2rem;
+  border-radius: var(--radius);
+  border: 1px solid rgba(110, 255, 160, 0.1);
+  max-width: 100%;
+  display: block;
+}
+
+/* ─── Footer ─── */
+footer {
+  position: relative;
+  background: var(--nero-2);
+  border-top: 1px solid rgba(110, 255, 160, 0.15);
+  padding: 3rem 8vw 2.5rem;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 2rem;
+}
+
+footer::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--verde) 0%, transparent 45%);
+  opacity: 0.35;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.footer-brand .brand-name {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--bianco);
+}
+
+.footer-brand .brand-name::before {
+  content: '> ';
+  color: var(--verde);
+}
+
+.footer-brand .brand-sub {
+  font-size: 0.78rem;
+  color: var(--grigio);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.footer-meta {
+  text-align: right;
+}
+
+.footer-year {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: rgba(110, 255, 160, 0.4);
+  letter-spacing: 0.1em;
+  display: block;
+}
+
+.footer-copy {
+  font-size: 0.75rem;
+  color: var(--grigio);
+  margin-top: 0.2rem;
+  display: block;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  header { padding: 3.5rem 6vw 3rem; }
+  header h1::before { content: ''; }
+  section { padding: 3rem 5vw; gap: 3.5rem; }
+  article { padding: 2rem 1.75rem 2.5rem; }
+  article::after { font-size: 3.5rem; }
+  footer { grid-template-columns: 1fr; gap: 1rem; padding: 2.5rem 6vw 1.5rem; }
+  .footer-meta { text-align: left; }
+}
+
+@media (max-width: 480px) {
+  article { padding: 1.5rem 1.25rem 2rem; border-radius: 8px; }
+  article h2 { font-size: 1.2rem; }
+}

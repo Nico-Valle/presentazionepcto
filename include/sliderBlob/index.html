@@ -1,0 +1,133 @@
+<div id="banner-popping-wrapper">
+    <div class="banner-container">
+        <fieldset>
+            <label style="--_img: url(include/sliderBlob/img/interface.png)">
+                <input type="radio" name="images" value="Fiddle Leaf">
+            </label>
+            <label style="--_img: url(include/sliderBlob/img/kotlin.png)">
+                <input type="radio" name="images" value="Pink Princess">
+            </label>
+            <label style="--_img: url(include/sliderBlob/img/memory.jpeg); background-repeat: no-repeat; background-color: rgba(241, 241, 150, 0.74);">
+                <input type="radio" name="images" value="Monstera" checked>
+            </label>
+            <label class="v3d-video-label">
+                <input type="radio" name="images" value="Video Name">
+                <video autoplay muted loop playsinline class="v3d-video-bg">
+                    <source src="include/sliderBlob/img/video.mp4" type="video/mp4">
+                </video>
+            </label>
+        </fieldset>
+    </div>
+</div>
+
+<style>
+    @import "https://unpkg.com/open-props" layer(design.system);
+
+/* Namespace per isolare il componente */
+#banner-popping-wrapper {
+  /*  --banner-bg: var(--gradient-9);*/
+    display: block;
+    width: 100%;
+    padding: var(--size-5);
+    background: var(--banner-bg); /* Lo sfondo ora è limitato al contenitore */
+}
+
+@layer banner__geral {
+  #banner-popping-wrapper fieldset {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: 50vh;
+    gap: var(--size-3);
+    border: none;
+    inline-size: 80vw;
+    margin: 0 auto;
+    
+    grid-template-columns:
+      var(--col-1, 1fr)
+      var(--col-2, 1fr)
+      var(--col-3, 1fr)
+      var(--col-4, 1fr)
+      var(--col-5, 1fr);
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: grid-template-columns 2s var(--ease-spring-5);
+    }
+
+    /* Logica degli stati checked isolata */
+    &:has(label:nth-child(1) > input:checked) { --col-1: 5fr; --col-2: 3fr; }
+    &:has(label:nth-child(2) > input:checked) { --col-1: 2fr; --col-2: 5fr; --col-3: 2fr; }
+    &:has(label:nth-child(3) > input:checked) { --col-2: 2fr; --col-3: 5fr; --col-4: 2fr; }
+    &:has(label:nth-child(4) > input:checked) { --col-3: 2fr; --col-4: 5fr; --col-5: 2fr; }
+    &:has(label:nth-child(5) > input:checked) { --col-4: 3fr; --col-5: 5fr; }
+
+    > label {
+      background-image: var(--_img);
+      background-position: center;
+      background-size: auto 125%;
+      cursor: pointer;
+      border-radius: var(--radius-4);
+      position: relative;
+
+      &:focus-within {
+        outline: 1px solid green;
+        outline-offset: 5px;
+      }
+
+      > input {
+        opacity: 0;
+        position: absolute;
+      }
+    }
+  }
+}
+
+#banner-popping-wrapper fieldset > label:has(input:checked) {
+  background-size: contain;
+  background-color: rgba(46, 43, 43, 0.2); /* Opzionale: scurisce leggermente il fondo per far risaltare la foto */
+  
+}
+
+/* Rimosse le regole su html e body per non influenzare la pagina esterna */
+#banner-popping-wrapper .banner-container {
+    min-block-size: 60vh;
+    display: grid;
+    place-content: center;
+    gap: var(--size-5);
+}
+
+
+/*video*/
+
+/* Stile base per la label che contiene il video */
+#banner-popping-wrapper fieldset > label.v3d-video-label {
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000; /* Sfondo nero di sicurezza */
+}
+
+/* Il video si comporta come il background-image: cover */
+#banner-popping-wrapper .v3d-video-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Come 'background-size: cover' */
+    transition: all 0.7s var(--ease-spring-3);
+    pointer-events: none; /* Impedisce al video di bloccare il click sulla radio */
+}
+
+/* Quando la slide è SELEZIONATA, il video mostra tutto il contenuto */
+#banner-popping-wrapper fieldset > label:has(input:checked) .v3d-video-bg {
+    object-fit: contain; /* Come 'background-size: contain' */
+}
+
+/* Assicurati che l'input radio rimanga cliccabile sopra il video */
+#banner-popping-wrapper .v3d-video-label input {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    cursor: pointer;
+    opacity: 0;
+}
+</style>

@@ -1,0 +1,202 @@
+<div id="v3d-container-root">
+  <style>
+    /* Tutto il CSS è limitato a #v3d-container-root */
+    #v3d-container-root {
+      all: initial; /* Reset parziale per isolare dall'ereditarietà */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      font-family: 'Courier New', monospace;
+      background: #0d0d14;
+      padding: 20px 0;
+    }
+
+    #v3d-container-root * {
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+
+    #v3d-container-root .viewer3d-wrapper {
+      position: relative;
+      width: 90%;
+      max-width: 900px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #1a1a2e;
+      box-shadow: 0 0 60px rgba(100, 120, 255, 0.2), 0 8px 32px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    #v3d-container-root #viewer3d-canvas {
+      width: 100%;
+      height: 60vh; /* Ridotto leggermente per adattarsi meglio a pagine esistenti */
+      display: block;
+    }
+
+    #v3d-container-root .viewer3d-hint {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.5);
+      color: rgba(255,255,255,0.7);
+      font-size: 11px;
+      padding: 5px 16px;
+      border-radius: 20px;
+      backdrop-filter: blur(6px);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    #v3d-container-root .controls {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #v3d-container-root .controls button {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    #v3d-container-root .controls button:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    #v3d-container-root .controls button.v3d-active {
+      background: rgba(100, 120, 255, 0.4);
+      border-color: rgba(100, 120, 255, 0.6);
+    }
+
+    #v3d-container-root #v3d-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1a1a2e;
+      z-index: 10;
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+    }
+
+    #v3d-container-root .v3d-spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-top-color: rgba(100,120,255,0.8);
+      border-radius: 50%;
+      animation: v3d-spin 0.8s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes v3d-spin { to { transform: rotate(360deg); } }
+  </style>
+
+  <div class="viewer3d-wrapper">
+    <div id="viewer3d-canvas">
+      <div id="v3d-loading">
+        <div class="v3d-spinner"></div>
+        CARICAMENTO...
+      </div>
+    </div>
+    <div class="viewer3d-hint">🖱 Trascina | Scroll per zoom</div>
+  </div>
+
+  <div class="controls">
+    <button id="v3d-play" class="v3d-active">▶ PLAY</button>
+    <button id="v3d-pause">⏸ PAUSA</button>
+    <button id="v3d-rotate">↻ AUTO-ROTATE: ON</button>
+  </div>
+
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <script>
+    (function() {
+      const root = document.getElementById('v3d-container-root');
+      const canvasDiv = root.querySelector('#viewer3d-canvas');
+      const loading = root.querySelector('#v3d-loading');
+
+      // Crea model-viewer
+      const mv = document.createElement('model-viewer');
+      // NOTA: Se il file model.glb è in una cartella specifica, cambia il percorso qui
+      mv.setAttribute('src', 'include/3dView/model.glb'); 
+      mv.setAttribute('auto-rotate', '');
+      mv.setAttribute('camera-controls', '');
+      mv.setAttribute('autoplay', '');
+      mv.style.width = '100%';
+      mv.style.height = '100%';
+      mv.style.display = 'block';
+
+      mv.addEventListener('load', () => {
+        loading.style.display = 'none';
+        const anims = mv.availableAnimations;
+        if (anims && anims.length > 0) {
+          mv.animationName = anims[0];
+          updateAnimButtons(anims);
+        }
+      });
+
+      mv.addEventListener('error', (e) => {
+        loading.innerHTML = '<span style="color:#ff6b6b">Errore Modello</span>';
+      });
+
+      canvasDiv.appendChild(mv);
+
+      // Gestione Bottoni con selettori locali
+      const btnPlay = root.querySelector('#v3d-play');
+      const btnPause = root.querySelector('#v3d-pause');
+      const btnRotate = root.querySelector('#v3d-rotate');
+
+      btnPlay.onclick = () => {
+        mv.play();
+        btnPlay.classList.add('v3d-active');
+        btnPause.classList.remove('v3d-active');
+      };
+
+      btnPause.onclick = () => {
+        mv.pause();
+        btnPause.classList.add('v3d-active');
+        btnPlay.classList.remove('v3d-active');
+      };
+
+      btnRotate.onclick = () => {
+        if (mv.hasAttribute('auto-rotate')) {
+          mv.removeAttribute('auto-rotate');
+          btnRotate.textContent = '↻ AUTO-ROTATE: OFF';
+          btnRotate.classList.remove('v3d-active');
+        } else {
+          mv.setAttribute('auto-rotate', '');
+          btnRotate.textContent = '↻ AUTO-ROTATE: ON';
+          btnRotate.classList.add('v3d-active');
+        }
+      };
+
+      function updateAnimButtons(anims) {
+        if (anims.length <= 1) return;
+        const ctrls = root.querySelector('.controls');
+        anims.forEach((name, i) => {
+          const btn = document.createElement('button');
+          btn.textContent = name || 'ANIM ' + (i+1);
+          btn.onclick = () => {
+            root.querySelectorAll('.controls button').forEach(b => b.classList.remove('v3d-active'));
+            btn.classList.add('v3d-active');
+            mv.animationName = name;
+            mv.play();
+          };
+          ctrls.appendChild(btn);
+        });
+      }
+    })();
+  </script>
+</div>
